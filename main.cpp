@@ -7,8 +7,8 @@ vector<vector<int>> maximum, allocation, need; /// maximum[1][1]+=1;
 int numberOfProcess, numberOfResources;
 
 void showCurrentState() {
-    cout << "////////////////////////////////////////////////////////////////" << endl;
-    cout << "Process# \t Allocation \t Maximum \t need \n";
+    cout << "--------------------------------------------------------------------------------" << endl;
+    cout << "Process# \t Allocation \t Maximum \t need \t Available\n";
     for (int i = 0; i < numberOfProcess; ++i) {
         cout << 'P' << i << "\t\t\t\t";
         for (int j = 0; j < numberOfResources; ++j) {
@@ -23,9 +23,15 @@ void showCurrentState() {
         for (int j = 0; j < numberOfResources; ++j) {
             cout << need[i][j] << ' ';
         }
+        if (i == 0) {
+            cout << "\t\t";
+            for (int j = 0; j < numberOfResources; ++j) {
+                cout << available[j] << ' ';
+            }
+        }
         cout << endl;
     }
-    cout << "////////////////////////////////////////////////////////////////" << endl;
+    cout << "--------------------------------------------------------------------------------" << endl;
 }
 
 void clearData() {
@@ -97,15 +103,21 @@ bool testAllProcesses() {
         return -1;
     };
     auto availableTemp = available;
+    auto maximumTemp = maximum;
+    auto needTemp = need;
+    auto allocationTemp = allocation;
     int processIndex = findProcess();
     while (processIndex != -1) {
         done[processIndex] = true;
-        cout << "P"<<processIndex << endl;
+        cout << "P" << processIndex << endl;
         execProcess(processIndex);
         showCurrentState();
         processIndex = findProcess();
     }
     available = availableTemp;
+    allocation = allocationTemp;
+    maximum = maximumTemp;
+    need = needTemp;
     for (int i = 0; i < numberOfProcess; ++i) {
         if (!done[i])
             return false;
@@ -186,7 +198,7 @@ int main() {
     freopen("output.txt", "w", stdout);
 #endif
     takeInitialInput();
-    cout << testAllProcesses();
-//    readCommand();
+    testAllProcesses();
+    readCommand();
     return 0;
 }
