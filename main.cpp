@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 
-#define endl '\n'
 using namespace std;
 vector<int> available;
 vector<vector<int> > maximum, allocation, need; /// maximum[1][1]+=1;
