@@ -1,0 +1,3 @@
+C:/Users/Mo/Desktop/Edu/Year3_Second_Term/Advanced OS/Banker Algorithm/cmake-build-debug/CMakeFiles/Banker_Algorithm.dir
+C:/Users/Mo/Desktop/Edu/Year3_Second_Term/Advanced OS/Banker Algorithm/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Mo/Desktop/Edu/Year3_Second_Term/Advanced OS/Banker Algorithm/cmake-build-debug/CMakeFiles/rebuild_cache.dir
