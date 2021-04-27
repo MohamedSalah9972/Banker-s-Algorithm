@@ -3,29 +3,36 @@
 #define endl '\n'
 using namespace std;
 vector<int> available;
-vector<vector<int>> maximum, allocation, need; /// maximum[1][1]+=1;
+vector<vector<int> > maximum, allocation, need; /// maximum[1][1]+=1;
 int numberOfProcess, numberOfResources;
 
-void showCurrentState() {
+void showCurrentState()
+{
     cout << "--------------------------------------------------------------------------------" << endl;
     cout << "Process# \t Allocation \t Maximum \t need \t Available\n";
-    for (int i = 0; i < numberOfProcess; ++i) {
+    for (int i = 0; i < numberOfProcess; ++i)
+    {
         cout << 'P' << i << "\t\t\t\t";
-        for (int j = 0; j < numberOfResources; ++j) {
+        for (int j = 0; j < numberOfResources; ++j)
+        {
             cout << allocation[i][j] << ' ';
         }
         cout << " \t\t";
-        for (int j = 0; j < numberOfResources; ++j) {
+        for (int j = 0; j < numberOfResources; ++j)
+        {
             cout << maximum[i][j] << ' ';
         }
         cout << "\t\t";
 
-        for (int j = 0; j < numberOfResources; ++j) {
+        for (int j = 0; j < numberOfResources; ++j)
+        {
             cout << need[i][j] << ' ';
         }
-        if (i == 0) {
+        if (i == 0)
+        {
             cout << "\t\t";
-            for (int j = 0; j < numberOfResources; ++j) {
+            for (int j = 0; j < numberOfResources; ++j)
+            {
                 cout << available[j] << ' ';
             }
         }
@@ -34,67 +41,81 @@ void showCurrentState() {
     cout << "--------------------------------------------------------------------------------" << endl;
 }
 
-void clearData() {
+void clearData()
+{
     need.clear();
     maximum.clear();
     allocation.clear();
     available.clear();
 }
 
-void setSize() {
+void setSize()
+{
     available.resize(numberOfResources);
     maximum.resize(numberOfProcess, vector<int>(numberOfResources));
     allocation.resize(numberOfProcess, vector<int>(numberOfResources));
     need.resize(numberOfProcess, vector<int>(numberOfResources));
 }
 
-void takeInitialInput() {
+void takeInitialInput()
+{
     clearData();
     cout << "Enter number of process: ";
     cin >> numberOfProcess;
     cout << "Enter number of resources: ";
     cin >> numberOfResources;
     setSize();
-    for (int i = 0; i < numberOfResources; ++i) {
+    for (int i = 0; i < numberOfResources; ++i)
+    {
         cout << "Enter available resources for R" << i << ": ";
         cin >> available[i];
     }
     cout << endl;
-    for (int i = 0; i < numberOfProcess; ++i) {
+    for (int i = 0; i < numberOfProcess; ++i)
+    {
         cout << "Maximum for P" << i << " :" << endl;
-        for (int j = 0; j < numberOfResources; ++j) {
+        for (int j = 0; j < numberOfResources; ++j)
+        {
             cin >> maximum[i][j];
         }
     }
-    for (int i = 0; i < numberOfProcess; ++i) {
+    for (int i = 0; i < numberOfProcess; ++i)
+    {
         cout << "Allocation for P" << i << " :" << endl;
-        for (int j = 0; j < numberOfResources; ++j) {
+        for (int j = 0; j < numberOfResources; ++j)
+        {
             cin >> allocation[i][j];
             need[i][j] = maximum[i][j] - allocation[i][j];
         }
     }
-
 }
 
-void toLower(string &s) {
-    for (char &c:s)c = tolower(c);
+void toLower(string &s)
+{
+    for (char &c : s)
+        c = tolower(c);
 }
 
-void execProcess(int processIndex) {
-    for (int i = 0; i < numberOfResources; ++i) {
+void execProcess(int processIndex)
+{
+    for (int i = 0; i < numberOfResources; ++i)
+    {
         available[i] += allocation[processIndex][i];
         need[processIndex][i] = allocation[processIndex][i] = maximum[processIndex][i] = 0;
     }
 }
 
-bool testAllProcesses() {
+bool testAllProcesses()
+{
     vector<bool> done(numberOfProcess, false);
     auto findProcess = [&]() {
-        for (int i = 0; i < numberOfProcess; ++i) {
+        for (int i = 0; i < numberOfProcess; ++i)
+        {
             if (done[i])
                 continue;
             bool ok = true;
-            for (int j = 0; j < numberOfResources; ++j) {
+            for (int j = 0; j < numberOfResources; ++j)
+            {
                 ok &= available[j] >= need[i][j];
             }
             if (ok)
@@ -107,7 +128,8 @@ bool testAllProcesses() {
     auto needTemp = need;
     auto allocationTemp = allocation;
     int processIndex = findProcess();
-    while (processIndex != -1) {
+    while (processIndex != -1)
+    {
         done[processIndex] = true;
         cout << "P" << processIndex << endl;
         execProcess(processIndex);
@@ -118,16 +140,18 @@ bool testAllProcesses() {
     allocation = allocationTemp;
     maximum = maximumTemp;
     need = needTemp;
-    for (int i = 0; i < numberOfProcess; ++i) {
+    for (int i = 0; i < numberOfProcess; ++i)
+    {
         if (!done[i])
             return false;
     }
     return true;
 }
 
-
-bool request(int processIndex, vector<int> resources) {
-    for (int i = 0; i < resources.size(); ++i) {
+bool request(int processIndex, vector<int> resources)
+{
+    for (int i = 0; i < resources.size(); ++i)
+    {
         available[i] -= resources[i];
         allocation[processIndex][i] += resources[i];
         need[processIndex][i] -= resources[i];
@@ -135,70 +159,91 @@ bool request(int processIndex, vector<int> resources) {
     return testAllProcesses();
 }
 
-bool release(int processIndex, vector<int> resources) {
+bool release(int processIndex, vector<int> resources)
+{
     bool ok = true;
-    for (int i = 0; i < resources.size(); ++i) {
+    for (int i = 0; i < resources.size(); ++i)
+    {
         ok &= allocation[processIndex][i] >= resources[i];
         allocation[processIndex][i] -= resources[i];
         available[i] += resources[i];
         need[processIndex][i] += resources[i];
     }
-    if (!ok) {
+    if (!ok)
+    {
         request(processIndex, resources);
         return false;
-    } else
+    }
+    else
         return true;
 }
 
-bool executeCommand(string &command) {
+bool executeCommand(string &command)
+{
     // RQ p1 2 4 2
     toLower(command);
     istringstream in(command);
     string first;
     in >> first;
     bool returnValue = false;
-    if (first != "quit") {
+    if (first != "quit")
+    {
 
         string process;
         int resource;
         in >> process;
         int processIndex = stoi(process.substr(1, process.size() - 1));
         vector<int> resources;
-        while (in >> resource) {
+        while (in >> resource)
+        {
             resources.push_back(resource);
         }
 
-        if (first == "rq") {
-            if (!request(processIndex, resources)) {
+        if (first == "rq")
+        {
+            if (!request(processIndex, resources))
+            {
+                showCurrentState();
+                cout << "Request failed" << endl;
                 release(processIndex, resources);
                 returnValue = false;
-            } else {
+            }
+            else
+            {
                 returnValue = true;
             }
-        } else if (first == "rl") {
+        }
+        else if (first == "rl")
+        {
             returnValue = release(processIndex, resources);
         }
-    } else {
+    }
+    else
+    {
         exit(0);
     }
     showCurrentState();
     return returnValue;
 }
 
-bool readCommand() {
+bool readCommand()
+{
     string cmd;
-    cin.ignore();
     getline(cin, cmd);
+    cout << "command: " << cmd << endl;
     return executeCommand(cmd);
 }
 
-int main() {
-#ifndef ONLINE_JUDGE
+int main()
+{
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
-#endif
     takeInitialInput();
     testAllProcesses();
-    readCommand();
+    cin.ignore();
+    while (true)
+    {
+        readCommand();
+    }
     return 0;
 }
